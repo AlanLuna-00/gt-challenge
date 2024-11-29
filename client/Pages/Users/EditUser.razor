@@ -1,0 +1,45 @@
+@page "/Users/edit/{Id:int}"
+@using client.Services
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+@inject RoleService RoleService
+
+<h3>Editar Usuario</h3>
+
+@if (loading)
+{
+    <p>Cargando datos del usuario...</p>
+}
+else if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else
+{
+    <EditForm Model="editUser" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Nombre de Usuario</label>
+            <InputText id="username" class="form-control" @bind-Value="editUser.Username" />
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <InputText id="email" class="form-control" @bind-Value="editUser.Email" />
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Nueva Contraseña (opcional)</label>
+            <InputText id="password" class="form-control" @bind-Value="editUser.NewPassword" type="password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancelar</button>
+    </EditForm>
+}
+
+@code {
+
+}

@@ -1,0 +1,75 @@
+﻿@using client.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+@inject CustomAuthStateProvider AuthStateProvider
+@inject RoleService RoleService
+
+@page "/Users"
+
+<h3>Gestión de Usuarios</h3>
+
+@if (!isAuthenticated)
+{
+    <p>No estás autenticado. Por favor, inicia sesión.</p>
+}
+else if (!isAuthorized)
+{
+    <p class="text-danger">No tienes acceso a esta página.</p>
+}
+else
+{
+    @if (loading)
+    {
+        <p>Cargando usuarios...</p>
+    }
+    else if (errorMessage != null)
+    {
+        <p class="text-danger">@errorMessage</p>
+    }
+    else
+    {
+        <div class="mb-3">
+            <input type="text" class="form-control" @bind="searchQuery" placeholder="Buscar usuarios..." />
+            <button class="btn btn-primary mt-2" @onclick="SearchUsers">Buscar</button>
+            <button class="btn btn-secondary mt-2 ms-2" @onclick="ClearSearch">Limpiar</button>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Nombre de Usuario</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@user.Email</td>
+                    <td>@user.Role</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => EditUser(user.Id)">Editar</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => PromptDeleteUser(user.Id)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-primary" @onclick="PreviousPage" disabled="@(!hasPreviousPage)">Anterior</button>
+            <span>Página @currentPage de @totalPages</span>
+            <button class="btn btn-primary" @onclick="NextPage" disabled="@(!hasNextPage)">Siguiente</button>
+        </div>
+
+        @if (canCreateUser)
+        {
+            <button class="btn btn-success mt-3" @onclick="CreateUser">Crear Usuario</button>
+        }
+    }
+}
+

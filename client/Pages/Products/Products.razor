@@ -1,0 +1,87 @@
+@using client.Services
+@using Microsoft.AspNetCore.Authorization
+@inject ProductService ProductService
+@inject NavigationManager NavigationManager
+@inject CustomAuthStateProvider AuthStateProvider
+@inject RoleService RoleService
+
+@page "/Products"
+
+<h3>Gestión de Productos</h3>
+
+@if (loading)
+{
+    <p>Cargando productos...</p>
+}
+else if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else if (!isAuthenticated)
+{
+    <p class="text-danger">No estás autenticado. Por favor, inicia sesión.</p>
+}
+else
+{
+    <div class="mb-3">
+        <label>
+            <input type="checkbox" @bind="includeDeleted" /> Incluir Eliminados
+        </label>
+    </div>
+    <div class="mb-3">
+        <input type="text" class="form-control" @bind="searchQuery" placeholder="Buscar productos por nombre o descripción..." />
+        <button class="btn btn-primary mt-2" @onclick="SearchProducts">Buscar</button>
+        <button class="btn btn-secondary mt-2 ms-2" @onclick="ClearSearch">Limpiar</button>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            @if (canManageProducts)
+            {
+                <th>Acciones</th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td>@product.Price</td>
+                <td>@product.Stock</td>
+                @if (canManageProducts)
+                {
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => EditProduct(product.Id)">Editar</button>
+                        @if (product.IsDeleted)
+                        {
+                            <button class="btn btn-success btn-sm ms-2" @onclick="RestoreProduct">Activar</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-danger btn-sm ms-2" @onclick="() => DeleteProduct(product.Id)">Eliminar</button>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-primary" @onclick="PreviousPage" disabled="@(!hasPreviousPage)">Anterior</button>
+        <span>Página @currentPage de @totalPages</span>
+        <button class="btn btn-primary" @onclick="NextPage" disabled="@(!hasNextPage)">Siguiente</button>
+    </div>
+
+    @if (canManageProducts)
+    {
+        <button class="btn btn-success mt-3" @onclick="CreateProduct">Crear Producto</button>
+    }
+}

@@ -1,0 +1,36 @@
+## Compiled source ##
+*.dll
+*.exe
+*.so
+*.dylib
+*.pdb
+*.cache
+
+## Directories ##
+bin/
+obj/
+wwwroot/
+
+## User-specific files ##
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vscode/
+
+## Logs ##
+*.log
+*.tlog
+*.trace
+
+## Build artifacts ##
+dist/
+out/
+
+## Dependency directories ##
+node_modules/
+packages/
+
+## Secrets and configuration ##
+appsettings*.json
+.env

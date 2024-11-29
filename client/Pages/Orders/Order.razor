@@ -1,0 +1,73 @@
+@using client.Services
+@using client.Shared.Enum
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject OrderService OrderService
+@inject NavigationManager NavigationManager
+@inject CustomAuthStateProvider AuthStateProvider
+@inject RoleService RoleService
+
+@page "/Orders"
+
+<h3>Gestión de Órdenes</h3>
+
+@if (loading)
+{
+    <p>Cargando órdenes...</p>
+}
+else if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Creada Por</th>
+                <th>Detalles</th>
+                @if (canManageOrders)
+                {
+                    <th>Acciones</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                    <td>@order.Status</td>
+                    <td>@order.CreatedByUsername</td>
+                    <td>
+                        <button class="btn btn-info btn-sm" @onclick="() => ViewDetails(order.Id)">Ver Detalles</button>
+                    </td>
+                    @if (canManageOrders)
+                    {
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary btn-sm me-2" @onclick="() => UpdateOrder(order.Id)">Actualizar</button>
+                                <select class="form-select form-select-sm w-auto" @onchange="(args) => ChangeOrderStatus(order.Id, args)">
+                                    @foreach (var status in Enum.GetValues<OrderStatus>())
+                                    {
+                                        <option value="@status" selected="@(order.Status == status)">@status</option>
+                                    }
+                                </select>
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-primary" @onclick="PreviousPage" disabled="@(!hasPreviousPage)">Anterior</button>
+        <span>Página @currentPage de @totalPages</span>
+        <button class="btn btn-primary" @onclick="NextPage" disabled="@(!hasNextPage)">Siguiente</button>
+    </div>
+
+    <button class="btn btn-success mt-3" @onclick="CreateOrder">Crear Orden</button>
+}

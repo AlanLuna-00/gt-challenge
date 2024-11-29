@@ -1,0 +1,59 @@
+@using client.Services
+@inject OrderService OrderService
+@inject NavigationManager NavigationManager
+@page "/Orders/{OrderId:int}/detail"
+
+<h3>Detalles de la Orden</h3>
+
+@if (loading)
+{
+    <p>Cargando detalles de la orden...</p>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (order != null)
+{
+    <div class="card">
+        <div class="card-header">
+            <h4>Orden #@order.Id</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Fecha:</strong> @order.OrderDate.ToString("yyyy-MM-dd")</p>
+            <p><strong>Estado:</strong> @order.Status</p>
+            <p><strong>Creada por:</strong> @order.CreatedByUsername</p>
+
+            <h5>Detalles</h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var detail in order.Details)
+                {
+                    <tr>
+                        <td>@detail.ProductName</td>
+                        <td>@detail.ProductDescription</td>
+                        <td>@detail.ProductPrice</td>
+                        <td>@detail.Quantity</td>
+                        <td>@(detail.ProductPrice * detail.Quantity)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <p>No se encontró la orden.</p>
+}
+
+<button class="btn btn-primary mt-3" @onclick="GoBack">Volver</button>

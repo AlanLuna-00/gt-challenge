@@ -1,0 +1,41 @@
+@using client.Services
+@using client.Shared.DTOs
+@inject ProductService ProductService
+@inject NavigationManager NavigationManager
+
+@page "/Products/create"
+
+<h3>Crear Producto</h3>
+
+@if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
+<EditForm Model="product" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <InputText id="name" class="form-control" @bind-Value="product.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Descripción</label>
+        <InputText id="description" class="form-control" @bind-Value="product.Description" />
+    </div>
+
+    <div class="mb-3">
+        <label for="price" class="form-label">Precio</label>
+        <InputNumber id="price" class="form-control" @bind-Value="product.Price" />
+    </div>
+
+    <div class="mb-3">
+        <label for="stock" class="form-label">Stock</label>
+        <InputNumber id="stock" class="form-control" @bind-Value="product.Stock" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Crear</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="Cancel">Cancelar</button>
+</EditForm>

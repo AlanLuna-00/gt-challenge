@@ -1,0 +1,38 @@
+## Ignore for all projects ##
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.log
+*.cache
+
+## Ignore for Blazor ##
+wwwroot/
+
+## Ignore for ASP.NET Core ##
+*.db
+*.db-journal
+*.sqlite
+appsettings*.json
+.env
+
+## Ignore IDE-specific files ##
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+.idea/
+
+## Ignore dependency directories ##
+node_modules/
+packages/
+
+## Ignore publish outputs ##
+dist/
+out/
+artifacts/
+
+# MacOs
+.DS_Store

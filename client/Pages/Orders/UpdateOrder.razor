@@ -1,0 +1,77 @@
+@using client.Services
+@inject ProductService ProductService
+@inject OrderService OrderService
+@inject NavigationManager NavigationManager
+
+@page "/Orders/edit/{orderId:int}"
+
+<h3>Actualizar Orden</h3>
+
+@if (loading)
+{
+    <p>Cargando orden...</p>
+}
+else if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else
+{
+    <div>
+        <h5>Productos Disponibles</h5>
+        <input type="text" class="form-control mb-2" @bind="searchQuery" placeholder="Buscar productos por nombre o descripción..."/>
+        <button class="btn btn-primary btn-sm" @onclick="SearchProducts">Buscar</button>
+        <button class="btn btn-secondary btn-sm ms-2" @onclick="ClearSearch">Limpiar</button>
+
+        <table class="table mt-3">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var product in filteredProducts)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Price</td>
+                    <td>@product.Stock</td>
+                    <td>
+                        <button class="btn btn-success btn-sm" @onclick="() => AddProductToOrder(product)">Agregar</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <h5>Productos en la Orden</h5>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var detail in orderDetails)
+        {
+            <tr>
+                <td>@detail.ProductName</td>
+                <td>
+                    <input type="number" class="form-control" @bind="detail.Quantity" min="1" max="5"/>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" @onclick="() => RemoveProductFromOrder(detail)">Eliminar</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary mt-3" @onclick="SubmitOrder">Actualizar Orden</button>
+}
