@@ -25,7 +25,7 @@ api/
 │   ├── products/           # Gestión de productos
 │   ├── orders/             # Gestión de órdenes
 ├── Migrations/             # Archivos de migración de Entity Framework Core
-├── Shared/                 # Excepciones, DTOs y otras clases reutilizables
+├── Shared/                 # Excepciones, DTOs y Middlewares
 ├── appsettings.json        # Configuración de la API
 ├── compose.yaml            # Archivo de configuración para la API
 ```
@@ -89,22 +89,41 @@ client/
    cd gt-challenges
    ```
 
-2. **Restaurar dependencias del API:**
+2. **Levantar base de datos dockerizada:**
+   ```bash
+   cd api
+   docker compose up -d
+   ```
+
+3. **Restaurar dependencias del API:**
    ```bash
    cd api
    dotnet restore
    ```
 
-3. **Restaurar dependencias del cliente:**
+4. **Aplicar migraciones:**
+   ```bash
+   cd api
+   dotnet tool install --global dotnet-ef # Instalacion de dotnet en tu terminal
+   dotnet ef database update # Aplicar migraciones
+   ```
+  
+3. **Restaurar dependencias del API:**
+   ```bash
+   cd api
+   dotnet restore
+   ```
+
+5. **Restaurar dependencias del cliente:**
    ```bash
    cd ../client
    dotnet restore
    ```
 
-4. **Ejecutar ambos proyectos:**
+6. **Ejecutar ambos proyectos:**
    - **API:** `dotnet run` dentro de la carpeta `api`.
    - **Cliente:** `dotnet run` dentro de la carpeta `client`.
 
-5. Acceso:
-   - **API:** `http://localhost:5000/swagger`
-   - **Cliente:** `http://localhost:5001`
+7. Acceso:
+   - **API:** `http://localhost:5274/swagger/index.html`
+   - **Cliente:** `http://localhost:5256`
