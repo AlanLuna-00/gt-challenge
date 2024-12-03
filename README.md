@@ -21,9 +21,9 @@ api/
 ├── Data/                   # Inicialización de datos
 ├── domain/                 # Conexión con la base de datos
 ├── features/               # Módulos organizados por funcionalidad
-│   ├── users/              # Gestión de usuarios
-│   ├── products/           # Gestión de productos
-│   ├── orders/             # Gestión de órdenes
+│   ├── users/              # Gestión de usuarios (module)
+│   ├── products/           # Gestión de productos (module)
+│   ├── orders/             # Gestión de órdenes (module)
 ├── Migrations/             # Archivos de migración de Entity Framework Core
 ├── Shared/                 # Excepciones, DTOs y Middlewares
 ├── appsettings.json        # Configuración de la API
@@ -57,7 +57,7 @@ client/
 
 ### Back-End
 - **Gestión de Usuarios:**
-  - Registro, actualización, eliminación lógica y cambio de contraseñas.
+  - Registro (creacion), actualización, eliminación lógica y cambio de contraseñas (feature faltante: cambio administrativo de contraseña).
   - Control de roles: `Admin`, `Gerente`, `Empleado`.
 - **Gestión de Productos:**
   - ABM de productos, con soporte para búsqueda y eliminación lógica.
@@ -74,9 +74,11 @@ client/
   - Uso de `CustomAuthStateProvider` para manejar el estado del usuario.
   - Control de acceso a vistas y acciones basado en roles.
 - **Búsqueda y filtros avanzados:**
-  - Búsqueda de productos con filtros para incluir o excluir elementos eliminados.
+  - Búsqueda de productos con filtros de busqueda y para incluir o excluir elementos eliminados.
 
-## Cómo ejecutar
+## Maneras de levantar el proyecto
+
+### Alternativa 1
 
 ### Requisitos previos
 - [.NET SDK 8.0](https://dotnet.microsoft.com/) para pruebas locales.
@@ -127,3 +129,29 @@ client/
 7. Acceso:
    - **API:** `http://localhost:5274/swagger/index.html`
    - **Cliente:** `http://localhost:5256`
+
+---
+
+### Alternativa 2
+
+### Pasos
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/AlanLuna-00/gt-challenge.git
+   cd gt-challenges
+   ```
+
+2. **Buildear el compose.yaml: (Solo es necesario la primera vez y si no se borra los volumes, luego solo -d)**
+   ```bash
+   docker compose up --build
+   ```
+
+3. **Bajar el servicio:**
+    ```bash
+   docker compose down # Agregar flag -v si quieres eliminar los volumes
+   ```
+
+4. Acceso:
+   - **API:** `http://localhost:3000/swagger/index.html`
+   - **Cliente:** `http://localhost:3001`
+

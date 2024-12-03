@@ -14,16 +14,21 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Leer la configuración desde appsettings.json en wwwroot
-var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-var config = await httpClient.GetFromJsonAsync<Dictionary<string, Dictionary<string, string>>>("appsettings.json");
+string apiBaseUrl;
 
-if (config == null || !config.ContainsKey("ApiSettings") || !config["ApiSettings"].ContainsKey("BaseUrl"))
+if (builder.HostEnvironment.IsDevelopment())
 {
-    throw new InvalidOperationException("API Base URL is missing in appsettings.json");
+    apiBaseUrl = "http://localhost:5274/";
+}
+else
+{
+    apiBaseUrl = "http://localhost:3000/";
 }
 
-var apiBaseUrl = config["ApiSettings"]["BaseUrl"];
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(apiBaseUrl)
+});
 
 // Configuración de servicios
 builder.Services.AddBlazoredLocalStorage(); // Servicio para almacenamiento local
@@ -40,10 +45,6 @@ builder.Services.AddHttpClient("AuthorizedClient")
 builder.Services.AddTransient<JwtAuthorizationHandler>();
 
 
-
-
-
-// Registrar el cliente HTTP con la URL base
 builder.Services.AddHttpClient("GT-API", client => client.BaseAddress = new Uri(apiBaseUrl));
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("GT-API"));
 

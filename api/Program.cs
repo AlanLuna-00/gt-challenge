@@ -132,10 +132,13 @@ app.UseMiddleware<ExceptionMiddleware>();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
     DataSeeder.Seed(context);
 }
 
-if (app.Environment.IsDevelopment())
+Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
+
+if (!app.Environment.IsProduction())
 {
     IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();

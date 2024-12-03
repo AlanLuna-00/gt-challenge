@@ -1,20 +1,21 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 8080
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY ["api.csproj", "./"]
+COPY ["api/api.csproj", "./"]
 RUN dotnet restore "api.csproj"
 
-COPY . .
+COPY ./api ./
 RUN dotnet build "api.csproj" -c Release -o /app/build
 
-FROM build AS publish
 RUN dotnet publish "api.csproj" -c Release -o /app/publish
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+COPY --from=build /app/publish .
+
+ENV DOTNET_ENVIRONMENT=Docker
+
+EXPOSE 8080
+
 ENTRYPOINT ["dotnet", "api.dll"]
