@@ -7,9 +7,6 @@ obj/
 *.log
 *.cache
 
-## Ignore for Blazor ##
-wwwroot/
-
 ## Ignore for ASP.NET Core ##
 *.db
 *.db-journal
